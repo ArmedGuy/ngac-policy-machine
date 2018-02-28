@@ -20,6 +20,9 @@ class Node:
         self.data = data
         self.parents = []
         self.children = []
+
+    def __str__(self):
+        return "<{} {}>".format(self.node_type, self.id)
     
     def attach_child(self, child):
         self.children.append(child)
@@ -33,7 +36,7 @@ class Node:
         """
         Return a list of nodes that this node inherits from
         """
-        nodes = []
+        nodes = [self]
         for p in self.parents:
             nodes += p.get_inheritance_chain()
         return set(nodes)
