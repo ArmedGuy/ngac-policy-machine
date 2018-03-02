@@ -41,16 +41,16 @@ class PolicyMachine:
         if not ua or not oa:
             return False
         
-        print("Check on", ua, oa)
+        #print("Check on", ua, oa)
 
         user_attributes = ua.get_inheritance_chain()
         object_attributes = oa.get_inheritance_chain()
 
-        print("User attribute chain", user_attributes)
-        print("Object attribute chain", object_attributes)
+        #print("User attribute chain", user_attributes)
+        #print("Object attribute chain", object_attributes)
 
         for ass_ua, _, ass_oa in [x for x in self.associations if x[1] == operation]:
-            print("Match found in matching operation", ass_ua, ass_oa)
+            #print("Match found in matching operation", ass_ua, ass_oa)
             if ass_ua in user_attributes and ass_oa in object_attributes:
                 return True
         return False

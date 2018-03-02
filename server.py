@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from ngac.models import Node, NODE_TYPE_U, NODE_TYPE_O, NODE_TYPE_UA, NODE_TYPE_OA
 from ngac.policy_machine import PolicyMachine
 
@@ -45,14 +45,37 @@ pm.add_association((group1, "read", indoor))
 pm.add_association((group1, "write", indoor))
 pm.add_association((group1, "read", temp2))
 
-
-print(pm.is_allowed("u1", "read", "indoor"))
-print(pm.is_allowed("u1", "write", "temp2"))
-
 @app.route("/")
 def main():
     return 'EHLO'
 
+@app.route("/authorization", methods=["POST"])
+def is_authorized():
+    req = request.get_json()
+    if isinstance(req, list):
+        resp = []
+        for auth_request in req:
+            ua = auth_request['User']
+            oa = auth_request['Object']
+            operation = auth_request['Operation']
+            resp.append({
+                "User": ua,
+                "Object": oa,
+                "Operation": operation,
+                "Response": pm.is_allowed(ua, operation, oa)
+            })
+        return jsonify(resp)
+    else:
+        auth_request = req
+        ua = auth_request['User']
+        oa = auth_request['Object']
+        operation = auth_request['Operation']
+        return jsonify({
+            "User": ua,
+            "Object": oa,
+            "Operation": operation,
+            "Response": pm.is_allowed(ua, operation, oa)
+        })
+
 if __name__ == '__main__':
-    #app.run("0.0.0.0", 3000)
-    pass
+    app.run("0.0.0.0", 3000)
