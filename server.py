@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 from ngac.models import Node, NODE_TYPE_U, NODE_TYPE_O, NODE_TYPE_UA, NODE_TYPE_OA
 from ngac.policy_machine import PolicyMachine
@@ -8,42 +9,37 @@ app = Flask(__name__)
 
 pm = PolicyMachine()
 
-group1 = Node(NODE_TYPE_UA, "group1", {
-    "Name": "Group 1"
-})
+def process_user_policies(parent, level):
+    append_id = not parent.id.startswith("pm_")
+    for k in level.keys():
+        if level[k] == None:
+            node = Node(NODE_TYPE_U, (parent.id + "/" if append_id else "") + k, None)
+            pm.attach_node(parent, node)
+        else:
+            node = Node(NODE_TYPE_UA, (parent.id + "/" if append_id else "") + k, None)
+            pm.attach_node(parent, node)
+            process_user_policies(node, level[k])
 
-pm.attach_node(pm.users_node, group1)
+def process_object_policies(parent, level):
+    append_id = not parent.id.startswith("pm_")
+    for k in level.keys():
+        if level[k] == None:
+            node = Node(NODE_TYPE_O, (parent.id + "/" if append_id else "") + k, None)
+            pm.attach_node(parent, node)
+        else:
+            node = Node(NODE_TYPE_OA, (parent.id + "/" if append_id else "") + k, None)
+            pm.attach_node(parent, node)
+            process_object_policies(node, level[k])
 
-user1 = Node(NODE_TYPE_U, "u1", {
-    "Name": "User 1"
-})
+with open("policy.json", "r") as f:
+    policy = json.loads(f.read())
+    users = policy['Users']
+    objects = policy['Objects']
+    process_user_policies(pm.users_node, users)
+    process_object_policies(pm.objects_node, objects)
+    for assoc in policy['Associations']:
+        pm.add_association((assoc['User'], assoc['Operation'], assoc['Object']))
 
-pm.attach_node(group1, user1)
-
-indoor = Node(NODE_TYPE_OA, "indoor", {
-    "Name": "Indoor"
-})
-
-outdoor = Node(NODE_TYPE_OA, "outdoor", {
-    "Name": "Outdoor"
-})
-
-temp1 = Node(NODE_TYPE_O, "temp1", {
-    "Name": "temp1"
-})
-
-temp2 = Node(NODE_TYPE_O, "temp2", {
-    "Name": "temp2"
-})
-
-pm.attach_node(pm.objects_node, indoor)
-pm.attach_node(pm.objects_node, outdoor)
-pm.attach_node(indoor, temp1)
-pm.attach_node(outdoor, temp2)
-
-pm.add_association((group1, "read", indoor))
-pm.add_association((group1, "write", indoor))
-pm.add_association((group1, "read", temp2))
 
 @app.route("/")
 def main():

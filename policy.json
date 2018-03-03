@@ -2,15 +2,47 @@
     "Users": {
         "systems": {
             "gatekeepers": {
-                
+                "gk1": null
+            },
+            "routers": {
+                "ltu-r1.sunet.se": null
             }
         }
     },
     "Objects": {
         "configurations": {
-            "config.se.sunet.ltu-r1": {
-
+            "config ltu-r1.sunet.se": {
+                "ports": {
+                    "eth0": {
+                        "speed": null
+                    },
+                    "eth1": {
+                        "speed": null
+                    },
+                    "eth3": {
+                        "speed": null
+                    }
+                },
+                "vpn": {
+                    "vpn0": {
+                        "hostname": null,
+                        "protocol": null,
+                        "mode": null                        
+                    }
+                }
             }
         }
-    }
+    },
+    "Associations": [
+        {
+            "User": "systems/gatekeepers/gk1",
+            "Object": "configurations/config ltu-r1.sunet.se",
+            "Operation": "read"
+        },
+        {
+            "User": "systems/gatekeepers/gk1",
+            "Object": "configurations/config ltu-r1.sunet.se/vpn/vpn0",
+            "Operation": "write"
+        }
+    ]
 }
