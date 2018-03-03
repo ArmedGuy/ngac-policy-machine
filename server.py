@@ -5,14 +5,12 @@ from ngac.policy_machine import PolicyMachine
 
 app = Flask(__name__)
 
-
-
 pm = PolicyMachine()
 
 def process_user_policies(parent, level):
     append_id = not parent.id.startswith("pm_")
     for k in level.keys():
-        if level[k] == None:
+        if level[k] == None: # null in config means its not an attribute
             node = Node(NODE_TYPE_U, (parent.id + "/" if append_id else "") + k, None)
             pm.attach_node(parent, node)
         else:
@@ -23,7 +21,7 @@ def process_user_policies(parent, level):
 def process_object_policies(parent, level):
     append_id = not parent.id.startswith("pm_")
     for k in level.keys():
-        if level[k] == None:
+        if level[k] == None: # null in config means its not an attribute
             node = Node(NODE_TYPE_O, (parent.id + "/" if append_id else "") + k, None)
             pm.attach_node(parent, node)
         else:

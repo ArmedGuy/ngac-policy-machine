@@ -41,6 +41,12 @@
             }
         }
     },
+    "SecondaryAssignments": [
+        {
+            "Child": "users/network-technicians/user1",
+            "Parent": "users/superadmins"
+        }
+    ],
     "Associations": [
         {
             "User": "systems/gatekeepers/gk1",

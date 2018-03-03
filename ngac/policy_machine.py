@@ -36,8 +36,10 @@ class PolicyMachine:
         :param oa_id. An object or object attribute that access rights are calculated against.
         """
 
-        ua = [x for x in self.nodes if x.id == ua_id].pop()
-        oa = [x for x in self.nodes if x.id == oa_id].pop()
+        first = lambda l: next(iter(l), None)
+        
+        ua = first(x for x in self.nodes if x.id == ua_id)
+        oa = first(x for x in self.nodes if x.id == oa_id)
 
         if not ua or not oa:
             return False
