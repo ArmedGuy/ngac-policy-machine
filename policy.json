@@ -7,6 +7,14 @@
             "routers": {
                 "ltu-r1.sunet.se": null
             }
+        },
+        "users": {
+            "superadmins": {
+                "ceo": null
+            },
+            "network-technicians": {
+                "user1": null
+            }
         }
     },
     "Objects": {
@@ -43,6 +51,26 @@
             "User": "systems/gatekeepers/gk1",
             "Object": "configurations/config ltu-r1.sunet.se/vpn/vpn0",
             "Operation": "write"
+        },
+        {
+            "User": "users/superadmins",
+            "Object": "pm_objects",
+            "Operation": "read"
+        },
+        {
+            "User": "users/superadmins",
+            "Object": "pm_objects",
+            "Operation": "write"
+        },
+        {
+            "User": "users/network-technicians",
+            "Object": "configurations",
+            "Operation": "read"
+        },
+        {
+            "User": "systems/routers/ltu-r1.sunet.se",
+            "Object": "configurations/config ltu-r1.sunet.se",
+            "Operation": "read"
         }
     ]
 }
